@@ -5,12 +5,15 @@ import { getAIResponse } from "../services/aiService";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useFirebase } from "../context/FirebaseContext"; // Import Firebase context
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { darkMode } = useTheme();
+  const { addMessage } = useFirebase(); // Get addMessage function
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -22,26 +25,36 @@ function Chat() {
   const sendMessage = async () => {
     if (input.trim() === "") return;
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: input, sender: "user" },
-    ]);
+    const userMessage = { text: input, sender: "user" };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
     setError(null);
+    setIsLoading(true);
+
+    await addMessage(userMessage);
 
     try {
-      const aiResponse = await getAIResponse(input);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: aiResponse, sender: "ai" },
-      ]);
+      const conversationHistory = [...messages, userMessage].map(
+        (msg) => msg.text
+      );
+      const aiResponseText = await getAIResponse(input, conversationHistory); // Send history
+      const aiMessage = { text: aiResponseText, sender: "ai" };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+
+      await addMessage(aiMessage);
     } catch (error) {
       console.error("Error getting AI response:", error);
       setError(`Error: ${error.message}`);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: "Sorry, I couldn't process that request.", sender: "ai" },
-      ]);
+      const errorMessage = {
+        text: "Sorry, I couldn't process that request.",
+        sender: "ai",
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+
+  
+      await addMessage(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -100,6 +113,29 @@ function Chat() {
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="text-left mb-4">
+            <div
+              className={`inline-block p-2 rounded-lg ${
+                darkMode
+                  ? "bg-gray-700 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              <div className="flex items-center">
+                <div className="w-2 h-2 bg-gray-500 rounded-full mr-1 animate-bounce"></div>
+                <div
+                  className="w-2 h-2 bg-gray-500 rounded-full mr-1 animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       {error && <div className="text-red-500 p-4">{error}</div>}
@@ -113,19 +149,23 @@ function Chat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+            onKeyPress={(e) => e.key === "Enter" && !isLoading && sendMessage()}
             className={`flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               darkMode
                 ? "bg-gray-700 text-white border-gray-600"
                 : "bg-white text-gray-800 border-gray-300"
             }`}
             placeholder="Type your message..."
+            disabled={isLoading}
           />
           <button
             onClick={sendMessage}
-            className="bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
           >
-            Send
+            {isLoading ? "Sending..." : "Send"}
           </button>
         </div>
       </div>

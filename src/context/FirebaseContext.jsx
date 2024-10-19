@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-refresh/only-export-components */import { createContext, useContext, useEffect, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */ import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -10,6 +15,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -31,6 +37,7 @@ export const useFirebase = () => useContext(FirebaseContext);
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
+const firebaseStore = getFirestore(firebaseApp);
 
 // Firebase Provider Component
 const FirebaseProvider = ({ children }) => {
@@ -54,6 +61,24 @@ const FirebaseProvider = ({ children }) => {
 
   const logout = () => signOut(firebaseAuth);
 
+  console.log(user);
+
+  const addMessage = async (message) => {
+    if (!user) return; // Ensure the user is logged in
+
+    try {
+      const messageData = {
+        text: message.text,
+        sender: message.sender,
+        timestamp: new Date(),
+        uid: user.uid, // Store the user's ID
+      };
+      await addDoc(collection(firebaseStore, "messages"), messageData);
+    } catch (error) {
+      console.error("Error adding message to Firestore:", error);
+    }
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -62,6 +87,7 @@ const FirebaseProvider = ({ children }) => {
         signInWithEmail,
         signInWithGoogle,
         logout,
+        addMessage,
       }}
     >
       {children}
