@@ -16,10 +16,12 @@ import {
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { data } from "autoprefixer";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
@@ -57,9 +59,6 @@ const FirebaseProvider = ({ children }) => {
     signInWithRedirect(firebaseAuth, googleProvider);
 
   const logout = () => signOut(firebaseAuth);
-
-  console.log(user);
-
   const addMessage = async (message) => {
     if (!user) return; // Ensure the user is logged in
 
