@@ -17,16 +17,13 @@ import {
 import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
 
-// Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBwA4YK1b4wdDij7jdWd2FW7ICr6yWDkGM",
-  authDomain: "ai-chatbot-ec559.firebaseapp.com",
-  databaseURL:
-    "https://ai-chatbot-ec559-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "ai-chatbot-ec559",
-  storageBucket: "ai-chatbot-ec559.appspot.com",
-  messagingSenderId: "1080539214866",
-  appId: "1:1080539214866:web:2abe45d0a0accd5889d4cb",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 export const FirebaseContext = createContext(null);
