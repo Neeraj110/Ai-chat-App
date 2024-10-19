@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-refresh/only-export-components */ import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -60,8 +56,6 @@ const FirebaseProvider = ({ children }) => {
     signInWithRedirect(firebaseAuth, googleProvider);
 
   const logout = () => signOut(firebaseAuth);
-
-  console.log(user);
 
   const addMessage = async (message) => {
     if (!user) return; // Ensure the user is logged in
