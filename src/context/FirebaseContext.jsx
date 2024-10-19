@@ -16,20 +16,10 @@ import {
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
-import { data } from "autoprefixer";
 
-// const firebaseConfig = {
-//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-//   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-//   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-// };
-
+// Firebase Configuration
 const firebaseConfig = {
-  apikey: "AIzaSyA6atHeMLA07U8vj6Swpq9dGG8kikz4LiY",
+  apiKey: "AIzaSyBwA4YK1b4wdDij7jdWd2FW7ICr6yWDkGM",
   authDomain: "ai-chatbot-ec559.firebaseapp.com",
   databaseURL:
     "https://ai-chatbot-ec559-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -70,6 +60,9 @@ const FirebaseProvider = ({ children }) => {
     signInWithRedirect(firebaseAuth, googleProvider);
 
   const logout = () => signOut(firebaseAuth);
+
+  console.log(user);
+
   const addMessage = async (message) => {
     if (!user) return; // Ensure the user is logged in
 
