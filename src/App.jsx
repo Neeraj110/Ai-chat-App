@@ -14,9 +14,9 @@ function App() {
 
   return (
     <Router>
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
+      <div className={`min-h-[100vh] ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
         <Header />
-        <main className="container mx-auto mt-4">
+        <main className="container mx-auto mt-4 ">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={user ? <Navigate to="/chat" /> : <Login />} />

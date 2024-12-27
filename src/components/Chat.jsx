@@ -88,7 +88,7 @@ function Chat() {
 
   return (
     <div
-      className={`flex flex-col flex-grow h-[80vh] ${
+      className={`flex flex-col flex-grow h-[85vh]  ${
         darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
