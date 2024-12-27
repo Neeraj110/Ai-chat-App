@@ -1,4 +1,4 @@
-const AI_API_KEY = "AIzaSyB1U2RjT3T9H1chDvnsabk1Feq61nEt5Lk";
+const AI_API_KEY = "AIzaSyA6atHeMLA07U8vj6Swpq9dGG8kikz4LiY";
 
 export async function getAIResponse(message, conversationHistory = []) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${AI_API_KEY}`;
